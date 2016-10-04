@@ -76,8 +76,7 @@ public class EnterGradeServlet extends HttpServlet {
 			session.setAttribute("records", records);
 		}
 		else{
-			records = DBGrade.gbPostStudent(userID2);
-			session.setAttribute("records", records);
+			nextURL = "/Login.jsp";
 		}
 		
 		response.sendRedirect(request.getContextPath()+nextURL);

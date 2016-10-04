@@ -66,13 +66,15 @@ public class UpdateServlet extends HttpServlet {
 		if(userID2 == 1){
 			records = DBGrade.gbPost();
 			session.setAttribute("records", records);
+			response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
 		}
 		else{
 			records = DBGrade.gbPostStudent(userID2);
 			session.setAttribute("records", records);
+			response.sendRedirect(request.getContextPath()+"/Login.jsp");
 		}
 		
-		response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
+		
 	}
 
 }

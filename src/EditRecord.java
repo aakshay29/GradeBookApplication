@@ -56,13 +56,13 @@ public class EditRecord extends HttpServlet {
 		if(userID == 1){
 			records = DBGrade.gbPost();
 			session.setAttribute("records", records);
+			response.sendRedirect(request.getContextPath()+"/EditRecord.jsp");
 		}
 		else{
-			records = DBGrade.gbPostStudent(userID);
-			session.setAttribute("records", records);
-		}
-		
-		response.sendRedirect(request.getContextPath()+"/EditRecord.jsp");
+			//records = DBGrade.gbPostStudent(userID);
+			//session.setAttribute("records", records);
+			response.sendRedirect(request.getContextPath()+"/Login.jsp");
+		}			
 	}
 
 }

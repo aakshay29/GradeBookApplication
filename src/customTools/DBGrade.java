@@ -89,7 +89,7 @@ public class DBGrade {
 	
 	public static List<Gbgrade> gbPost() {
 		EntityManager em = DBUtil.getEmFactory().createEntityManager();
-		String qString = "select b from Gbgrade b";
+		String qString = "select b from Gbgrade b ORDER BY b.userid";
 
 		List<Gbgrade> posts = null;
 		try {
@@ -163,7 +163,7 @@ public class DBGrade {
 		int studentIDInt = new BigDecimal(studentID).intValueExact();
 		EntityManager em = DBUtil.getEmFactory().createEntityManager();
 		
-		TypedQuery<Gbgrade> query = em.createQuery("SELECT b FROM Gbgrade b WHERE b.userid = :studentid", Gbgrade.class);
+		TypedQuery<Gbgrade> query = em.createQuery("SELECT b FROM Gbgrade b WHERE b.userid = :studentid ORDER BY b.userid", Gbgrade.class);
 		query.setParameter("studentid",studentIDInt);
 
 		List<Gbgrade> posts = null;
@@ -205,7 +205,7 @@ public class DBGrade {
 		int studentIDInt = new BigDecimal(studentID).intValueExact();
 		EntityManager em = DBUtil.getEmFactory().createEntityManager();
 		
-		TypedQuery<Gbgrade> query = em.createQuery("SELECT b FROM Gbgrade b WHERE b.userid = :studentid and b.assignmenttype = :assignmenttype", Gbgrade.class);
+		TypedQuery<Gbgrade> query = em.createQuery("SELECT b FROM Gbgrade b WHERE b.userid = :studentid and b.assignmenttype = :assignmenttype ORDER BY b.userid", Gbgrade.class);
 		query.setParameter("studentid",studentIDInt);
 		query.setParameter("assignmenttype",assignmentType);
 
@@ -248,7 +248,7 @@ public class DBGrade {
 	public static List<Gbgrade> gbPostAssignmentType(String assignmentType) {
 		EntityManager em = DBUtil.getEmFactory().createEntityManager();
 		
-		TypedQuery<Gbgrade> query = em.createQuery("SELECT b FROM Gbgrade b WHERE b.assignmenttype = :assignmenttype", Gbgrade.class);
+		TypedQuery<Gbgrade> query = em.createQuery("SELECT b FROM Gbgrade b WHERE b.assignmenttype = :assignmenttype ORDER BY b.userid", Gbgrade.class);
 		query.setParameter("assignmenttype",assignmentType);
 
 		List<Gbgrade> posts = null;

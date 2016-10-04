@@ -57,7 +57,7 @@ public class LoginServlet extends HttpServlet {
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
 			int userID = user.getId();
-			session.setAttribute("userID", userID);
+			session.setAttribute("userID", userID);		
 			
 			if(userID == 1){
 				records = DBGrade.gbPost();
