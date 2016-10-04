@@ -40,6 +40,10 @@ public class UpdateServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getSession().setAttribute("alert", "");
+		request.getSession().setAttribute("average", "");
+		request.getSession().setAttribute("HighAndLow", "");
+		
 		int userID = Integer.parseInt(request.getParameter("userID"));
 		String subject = request.getParameter("subject");
 		String assignment = request.getParameter("assignment");
@@ -49,6 +53,15 @@ public class UpdateServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		
 		List<Gbgrade> records = null;
+		
+		Gbgrade gradeRecord = (Gbgrade) session.getAttribute("grade");
+		gradeRecord.setUserid(userID);
+		gradeRecord.setSubject(subject);
+		gradeRecord.setAssignment(assignment);
+		gradeRecord.setAssignmenttype(assType);
+		gradeRecord.setGrade(grade);
+		DBGrade.update(gradeRecord);
+		
 		int userID2 = (int) session.getAttribute("userID");
 		if(userID2 == 1){
 			records = DBGrade.gbPost();
@@ -58,14 +71,6 @@ public class UpdateServlet extends HttpServlet {
 			records = DBGrade.gbPostStudent(userID2);
 			session.setAttribute("records", records);
 		}
-		
-		Gbgrade gradeRecord = (Gbgrade) session.getAttribute("grade");
-		gradeRecord.setUserid(userID);
-		gradeRecord.setSubject(subject);
-		gradeRecord.setAssignment(assignment);
-		gradeRecord.setAssignmenttype(assType);
-		gradeRecord.setGrade(grade);
-		DBGrade.update(gradeRecord);
 		
 		response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
 	}

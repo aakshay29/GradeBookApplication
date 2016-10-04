@@ -1,29 +1,25 @@
 
 
 import java.io.IOException;
-import java.util.List;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import customTools.DBGrade;
-import model.Gbgrade;
 
 /**
- * Servlet implementation class EditRecord
+ * Servlet implementation class GetHighestAndLowestScore
  */
-@WebServlet("/EditRecord")
-public class EditRecord extends HttpServlet {
+@WebServlet("/GetHighestAndLowestScore")
+public class GetHighestAndLowestScore extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EditRecord() {
+    public GetHighestAndLowestScore() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -44,25 +40,18 @@ public class EditRecord extends HttpServlet {
 		request.getSession().setAttribute("average", "");
 		request.getSession().setAttribute("HighAndLow", "");
 		
-		HttpSession session = request.getSession();
-
-		List<Gbgrade> records = null;
-		
-		int recordID = Integer.parseInt(request.getParameter("recordID"));
-		Gbgrade grade = DBGrade.getRecordById(recordID);
-		session.setAttribute("grade", grade);
-		
-		int userID = (int) session.getAttribute("userID");
-		if(userID == 1){
-			records = DBGrade.gbPost();
-			session.setAttribute("records", records);
+		request.getSession().setAttribute("alert", "");
+		String assignmentType = request.getParameter("assignmentType");
+		if(DBGrade.isValidAssignment(assignmentType) == true){
+			int highestScore = DBGrade.gbPostHighestScore(assignmentType);
+			int lowestScore = DBGrade.gbPostLowestScore(assignmentType);
+			request.getSession().setAttribute("HighAndLow", highestScore + " is the highest score and " + lowestScore + " is the lowest score in " + assignmentType);
+			response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
 		}
 		else{
-			records = DBGrade.gbPostStudent(userID);
-			session.setAttribute("records", records);
+			request.getSession().setAttribute("alert", "Assignment Type does not exist");
+			response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
 		}
-		
-		response.sendRedirect(request.getContextPath()+"/EditRecord.jsp");
 	}
 
 }

@@ -11,19 +11,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import customTools.DBGrade;
+import customTools.DBUser;
 import model.Gbgrade;
 
 /**
- * Servlet implementation class EditRecord
+ * Servlet implementation class ShowStudentRecordServlet
  */
-@WebServlet("/EditRecord")
-public class EditRecord extends HttpServlet {
+@WebServlet("/ShowStudentRecordServlet")
+public class ShowStudentRecordServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EditRecord() {
+    public ShowStudentRecordServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -43,26 +44,19 @@ public class EditRecord extends HttpServlet {
 		request.getSession().setAttribute("alert", "");
 		request.getSession().setAttribute("average", "");
 		request.getSession().setAttribute("HighAndLow", "");
-		
-		HttpSession session = request.getSession();
 
+		int studentID = Integer.parseInt(request.getParameter("studentID"));
 		List<Gbgrade> records = null;
-		
-		int recordID = Integer.parseInt(request.getParameter("recordID"));
-		Gbgrade grade = DBGrade.getRecordById(recordID);
-		session.setAttribute("grade", grade);
-		
-		int userID = (int) session.getAttribute("userID");
-		if(userID == 1){
-			records = DBGrade.gbPost();
+		HttpSession session = request.getSession();
+		if(DBUser.isValidRollNumber(studentID) == true){
+			records = DBGrade.gbPostStudent(studentID);
 			session.setAttribute("records", records);
+			response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
 		}
 		else{
-			records = DBGrade.gbPostStudent(userID);
-			session.setAttribute("records", records);
+			request.getSession().setAttribute("alert", "Student Roll Number does not exist");
+			response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
 		}
-		
-		response.sendRedirect(request.getContextPath()+"/EditRecord.jsp");
 	}
 
 }

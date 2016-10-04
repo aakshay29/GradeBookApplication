@@ -42,6 +42,10 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getSession().setAttribute("alert", "");
+		request.getSession().setAttribute("average", "");
+		request.getSession().setAttribute("HighAndLow", "");
+
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String nextUrl;
@@ -58,16 +62,18 @@ public class LoginServlet extends HttpServlet {
 			if(userID == 1){
 				records = DBGrade.gbPost();
 				session.setAttribute("records", records);
+				nextUrl = "/DisplayGrades.jsp";	
 			}
 			else{
 				records = DBGrade.gbPostStudent(userID);
 				session.setAttribute("records", records);
+				nextUrl = "/YourGrades.jsp";	
 			}
 			
-			nextUrl = "/DisplayGrades.jsp";	
+			
 		}
-		else{
-			response.getWriter().append("Invalid username/password");
+		else{	
+			request.getSession().setAttribute("alert", "Incorrect username or password");
 			nextUrl = "/Login.jsp";
 		}
 		response.sendRedirect(request.getContextPath()+nextUrl);

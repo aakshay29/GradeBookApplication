@@ -6,19 +6,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Display Grades</title>
+<jsp:include page="bootstrap.jsp"></jsp:include>
 </head>
 <body>
+
+<center><h1>Grades List</h1></center>
 	<div class="container">
+	<center>
 		<table class="table table-bordered table-striped table-hover">
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>UserID</th>
+					<th>Record ID</th>
+					<th>Roll Number</th>
 					<th>Subject</th>
 					<th>Assignment</th>
 					<th>Assignment Type</th>
-					<th>Grade</th>
+					<th>Score</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -33,13 +37,42 @@
 					</tr>
 				</c:forEach>
 			</tbody>
-		</table>
-		<form action="EditRecord" method="post">
-			Enter Record To edit: <br /> <input type="text" name="recordID"> <br />
-			<br /> 
-			<br /> <input type="submit" value="submit" id="submit">
-			<a href="EnterGrade.jsp">Enter new grade</a>
+		</table>	
+		<a href="EnterGrade.jsp">Enter new grade</a><br /><br /></center><hr>
+		<input type="text" value="${alert}" size="28" readonly><hr>
+		<form action="GetHighestAndLowestScore" method="post">
+			Enter Assignment Type to get highest and lowest score: <br /><input type="text" name="assignmentType">&nbsp;
+			<input type="submit" value="submit" id="submit"><br />
 		</form>
+		<input type="text" value="${HighAndLow}" size="40" readonly><br /><br /><hr>
+		<form action="ShowStudentRecordServlet" method="post">
+			Enter student Roll Number to view grades: <br /><input type="text" name="studentID">&nbsp;
+			<input type="submit" value="submit" id="submit"><br /><br />
+		</form><hr>
+		<form action="ShowAssignmentRecordServlet" method="post">
+			Enter assignment type to view grades: <br /><input type="text" name="assignmentType">&nbsp;
+			<input type="submit" value="submit" id="submit"><br /><br />
+		</form><hr>
+		<form action="ShowAssignmentAndStudentRecordServlet" method="post">
+			View grades for Roll Number: <br /><input type="text" name="studentID2"><br/>and&nbsp;
+			Assignment type: <br /><input type="text" name="assignmentType2">&nbsp;
+			<input type="submit" value="submit" id="submit"><br /><br />
+		</form><hr>
+		<form action="ShowStudentAverage" method="post">
+			Enter student Roll Number to view average: <br /><input type="text" name="studentID">&nbsp;
+			<input type="submit" value="submit" id="submit"><br />
+		</form>
+		<form action="ShowStudentAverageByAssignment" method="post">
+			View average score of Roll number: <br /><input type="text" name="studentID"><br/>and&nbsp;
+			Assignment type: <br/><input type="text" name="assignmentType">&nbsp;
+			<input type="submit" value="submit" id="submit"><br />
+		</form>
+		<input type="text" value="${average}" size="40" readonly><br /><br /><hr>
+		<form action="EditRecord" method="post">
+			Enter Record ID To edit: <br /><input type="text" name="recordID">&nbsp;
+			<input type="submit" value="submit" id="submit"><br /><br /><br />			
+		</form>
+
 	</div>
 </body>
 </html>

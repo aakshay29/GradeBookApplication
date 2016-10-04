@@ -155,5 +155,28 @@ public class DBUser {
 		return result;
 
 	}
+	
+	public static boolean isValidRollNumber(int userID) {
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		String qString = "Select count(g) from Gbuser g "
+				+ "where g.id = :userID";
+		TypedQuery<Long> q = em.createQuery(qString, Long.class);
+		boolean result = false;
+		q.setParameter("userID", userID);
+
+		try {
+			long userId = q.getSingleResult();
+			if (userId > 0) {
+				result = true;
+			}
+		} catch (Exception e) {
+
+			result = false;
+		} finally {
+			em.close();
+		}
+		return result;
+
+	}
 
 }

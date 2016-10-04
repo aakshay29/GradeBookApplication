@@ -40,7 +40,28 @@ public class DBGrade {
 			em.close();
 		}
 	}
+	public static boolean isValidAssignment(String assignmentType) {
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		String qString = "Select count(g) from Gbgrade g "
+				+ "where g.assignmenttype = :assignmentType";
+		TypedQuery<Long> q = em.createQuery(qString, Long.class);
+		boolean result = false;
+		q.setParameter("assignmentType", assignmentType);
 
+		try {
+			long userId = q.getSingleResult();
+			if (userId > 0) {
+				result = true;
+			}
+		} catch (Exception e) {
+
+			result = false;
+		} finally {
+			em.close();
+		}
+		return result;
+
+	}
 	/**
 	 * Updates the data in a Bhuser Pass the method a Bhuser with all the values
 	 * set to your liking and this method will update the database with these
@@ -83,12 +104,152 @@ public class DBGrade {
 		return posts;
 	}
 	
+	public static int gbPostHighestScore(String assignmentType) {
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		int highestNumber = 0;
+		int temp;
+		TypedQuery<Gbgrade> query = em.createQuery("select b.grade from Gbgrade b WHERE b.assignmenttype = :assignmenttype", Gbgrade.class);	
+		query.setParameter("assignmenttype",assignmentType);
+		List<Gbgrade> valueArray = query.getResultList();
+		try {
+			for(int i = 0; i < valueArray.size(); i++){		
+				Object grade = valueArray.get(i);	
+				temp = Integer.parseInt(grade.toString());
+				if(temp > highestNumber){
+					highestNumber = temp;
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+		return highestNumber;
+	}
+	
+	public static int gbPostLowestScore(String assignmentType) {
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		int lowestNumber = 0;
+		int temp;
+		TypedQuery<Gbgrade> query = em.createQuery("select b.grade from Gbgrade b WHERE b.assignmenttype = :assignmenttype", Gbgrade.class);	
+		query.setParameter("assignmenttype",assignmentType);
+		List<Gbgrade> valueArray = query.getResultList();
+		try {
+			for(int i = 0; i < valueArray.size(); i++){		
+				Object grade = valueArray.get(i);	
+				temp = Integer.parseInt(grade.toString());
+				if(temp > lowestNumber){
+					lowestNumber = temp;
+				}
+			}
+			for(int i = 0; i < valueArray.size(); i++){		
+				Object grade = valueArray.get(i);	
+				temp = Integer.parseInt(grade.toString());
+				if(temp < lowestNumber){
+					lowestNumber = temp;
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+		return lowestNumber;
+	}
+	
 	public static List<Gbgrade> gbPostStudent(long studentID) {
-		int studentIDInt = new BigDecimal(studentID).intValueExact();;
+		int studentIDInt = new BigDecimal(studentID).intValueExact();
 		EntityManager em = DBUtil.getEmFactory().createEntityManager();
 		
 		TypedQuery<Gbgrade> query = em.createQuery("SELECT b FROM Gbgrade b WHERE b.userid = :studentid", Gbgrade.class);
 		query.setParameter("studentid",studentIDInt);
+
+		List<Gbgrade> posts = null;
+		try {
+			//TypedQuery<Gbgrade> query = em.createQuery(qString, Gbgrade.class);
+			posts = query.getResultList();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+		return posts;
+	}
+	
+	public static int gbPostStudentAverage(long studentID) {
+		int studentIDInt = new BigDecimal(studentID).intValueExact();
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		
+		TypedQuery<Gbgrade> query = em.createQuery("SELECT b.grade FROM Gbgrade b WHERE b.userid = :studentid", Gbgrade.class);
+		query.setParameter("studentid",studentIDInt);
+		int average = 0;
+		List<Gbgrade> valueArray = query.getResultList();
+		try {
+			for(int i = 0; i < valueArray.size(); i++){		
+				Object grade = valueArray.get(i);	
+				average += Integer.parseInt(grade.toString());
+			}
+			//average = average/(valueArray.size()-1);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+		return average/(valueArray.size());
+	}
+	
+	public static List<Gbgrade> gbPostStudentAndAsstype(long studentID, String assignmentType) {
+		int studentIDInt = new BigDecimal(studentID).intValueExact();
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		
+		TypedQuery<Gbgrade> query = em.createQuery("SELECT b FROM Gbgrade b WHERE b.userid = :studentid and b.assignmenttype = :assignmenttype", Gbgrade.class);
+		query.setParameter("studentid",studentIDInt);
+		query.setParameter("assignmenttype",assignmentType);
+
+		List<Gbgrade> posts = null;
+		try {
+			//TypedQuery<Gbgrade> query = em.createQuery(qString, Gbgrade.class);
+			posts = query.getResultList();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+		return posts;
+	}
+		
+	public static int gbPostStudentAverageByAssignment(long studentID, String assignmentType) {
+		int studentIDInt = new BigDecimal(studentID).intValueExact();
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		int average = 0;
+		TypedQuery<Gbgrade> query = em.createQuery("SELECT b.grade FROM Gbgrade b WHERE b.userid = :studentid and b.assignmenttype = :assignmenttype", Gbgrade.class);
+		query.setParameter("studentid",studentIDInt);
+		query.setParameter("assignmenttype",assignmentType);
+
+		List<Gbgrade> valueArray = query.getResultList();
+		try {
+			for(int i = 0; i < valueArray.size(); i++){		
+				Object grade = valueArray.get(i);	
+				average += Integer.parseInt(grade.toString());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+		return average/(valueArray.size());
+	}
+	
+	public static List<Gbgrade> gbPostAssignmentType(String assignmentType) {
+		EntityManager em = DBUtil.getEmFactory().createEntityManager();
+		
+		TypedQuery<Gbgrade> query = em.createQuery("SELECT b FROM Gbgrade b WHERE b.assignmenttype = :assignmenttype", Gbgrade.class);
+		query.setParameter("assignmenttype",assignmentType);
 
 		List<Gbgrade> posts = null;
 		try {

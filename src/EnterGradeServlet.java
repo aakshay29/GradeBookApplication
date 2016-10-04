@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import customTools.DBGrade;
+import customTools.DBUser;
 import model.Gbgrade;
 
 /**
@@ -40,10 +41,35 @@ public class EnterGradeServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.getSession().setAttribute("alert", "");
+		request.getSession().setAttribute("average", "");
+		request.getSession().setAttribute("HighAndLow", "");
 		
 		HttpSession session = request.getSession();
-		
+		String nextURL = null;
 		List<Gbgrade> records = null;
+		
+		int userID = Integer.parseInt(request.getParameter("userID"));
+		String subject = request.getParameter("subject");
+		String assType = request.getParameter("assType");
+		String grade = request.getParameter("grade");
+		String assignment = request.getParameter("assNumber");
+		
+		if(DBUser.isValidRollNumber(userID) == true){
+			Gbgrade record = new Gbgrade();
+			record.setAssignment(assignment);
+			record.setAssignmenttype(assType);
+			record.setGrade(grade);
+			record.setSubject(subject);
+			record.setUserid(userID);			
+			DBGrade.insert(record);		
+			nextURL = "/DisplayGrades.jsp";
+		}
+		else{
+			request.getSession().setAttribute("alert", "Student Roll Number does not exist");
+			nextURL = "/EnterGrade.jsp";
+		}
+		
 		int userID2 = (int) session.getAttribute("userID");
 		if(userID2 == 1){
 			records = DBGrade.gbPost();
@@ -54,22 +80,8 @@ public class EnterGradeServlet extends HttpServlet {
 			session.setAttribute("records", records);
 		}
 		
-		int userID = Integer.parseInt(request.getParameter("userID"));
-		String subject = request.getParameter("subject");
-		String assType = request.getParameter("assType");
-		String grade = request.getParameter("grade");
-		String assignment = request.getParameter("assNumber");
+		response.sendRedirect(request.getContextPath()+nextURL);
 
-		Gbgrade record = new Gbgrade();
-		record.setAssignment(assignment);
-		record.setAssignmenttype(assType);
-		record.setGrade(grade);
-		record.setSubject(subject);
-		record.setUserid(userID);
-		
-		DBGrade.insert(record);
-		
-		response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
 	}
 
 }

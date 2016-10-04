@@ -4,18 +4,21 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Edit Record</title>
+<jsp:include page="bootstrap.jsp"></jsp:include>
 </head>
 <body>
+<center>
+<h1>Edit Records</h1>
 <form action="UpdateServlet" method="post">
 	
 	<%
 		model.Gbgrade u = (model.Gbgrade) session.getAttribute("grade");
 	%>
 	
-		<label id="id">User ID: <%=u.getId()%>
+		<label id="id">Record ID: <%=u.getId()%>
 		</label> <br /> 
-		<label>User ID:</label> <br /> 
+		<label>Roll number:</label> <br /> 
 		<input name="userID" id="userID" type="text" value=<%=u.getUserid()%> /> <br />
 				<label>Subject:</label> <br /> 
 		<input name="subject" id="subject" type="text" value=<%=u.getSubject()%> /> <br />
@@ -29,5 +32,6 @@
 		<br /> <a href="EnterGrade.jsp">Enter new grade</a>
 
 	</form>
+	</center>
 </body>
 </html>

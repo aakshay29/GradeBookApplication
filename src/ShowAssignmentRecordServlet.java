@@ -14,16 +14,16 @@ import customTools.DBGrade;
 import model.Gbgrade;
 
 /**
- * Servlet implementation class EditRecord
+ * Servlet implementation class ShowAssignmentRecordServlet
  */
-@WebServlet("/EditRecord")
-public class EditRecord extends HttpServlet {
+@WebServlet("/ShowAssignmentRecordServlet")
+public class ShowAssignmentRecordServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EditRecord() {
+    public ShowAssignmentRecordServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -43,26 +43,19 @@ public class EditRecord extends HttpServlet {
 		request.getSession().setAttribute("alert", "");
 		request.getSession().setAttribute("average", "");
 		request.getSession().setAttribute("HighAndLow", "");
-		
-		HttpSession session = request.getSession();
 
+		String assignmentType = request.getParameter("assignmentType");
 		List<Gbgrade> records = null;
-		
-		int recordID = Integer.parseInt(request.getParameter("recordID"));
-		Gbgrade grade = DBGrade.getRecordById(recordID);
-		session.setAttribute("grade", grade);
-		
-		int userID = (int) session.getAttribute("userID");
-		if(userID == 1){
-			records = DBGrade.gbPost();
+		HttpSession session = request.getSession();
+		if(DBGrade.isValidAssignment(assignmentType) == true){
+			records = DBGrade.gbPostAssignmentType(assignmentType);
 			session.setAttribute("records", records);
+			response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
 		}
 		else{
-			records = DBGrade.gbPostStudent(userID);
-			session.setAttribute("records", records);
+			request.getSession().setAttribute("alert", "Assignment Type does not exist");
+			response.sendRedirect(request.getContextPath()+"/DisplayGrades.jsp");
 		}
-		
-		response.sendRedirect(request.getContextPath()+"/EditRecord.jsp");
 	}
 
 }

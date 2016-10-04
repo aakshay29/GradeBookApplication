@@ -4,7 +4,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Login</title>
+<jsp:include page="bootstrap.jsp"></jsp:include>
 </head>
 <body>
 <center>
@@ -14,6 +15,7 @@
 			<br /> Password: <br /> <input type="password" name="password"
 				id="password"> <br />
 			<br /> <input type="submit" value="submit" id="submit">
+			<br/><br/><input type="text" value="${alert}" size="24" readonly>
 		</form>
 	</center>
 </body>
